@@ -10,15 +10,16 @@ const readResource = (source) => {
     currentObject = hierarchy[hierarchy.length - 1];
   };
 
-  const propRegex =
-    /"?([\w\d_\.\/]+)"?\s+"?([\w\d_\.\s\/\-\(\)\[\]\\"',\*#]+)?"?(?:$|(\s\[.+\]))/i;
+  // const propRegex =
+    // /"?([\w\d_\.\/]+)"?\s+"?([\w\d_\.\s\/\-\(\)\[\]\\"',\*#!&]+)?"?(?:$|(\s\[.+\]))/i;
+  const propRegex = /"?(.*?)?"?\s+"?(.*?)?"?(?:$|(\s\[.+\]))/i;
   const parseProperty = (prop) => {
     const match = prop.match(propRegex);
 
     if (!match) return {};
 
     return {
-      name: match[1].replace(/\"/g, ""),
+      name: (match[1] || '_').replace(/\"/g, ""),
       value: match[2]?.replace(/\"/g, ""),
       platform: match[3],
     };

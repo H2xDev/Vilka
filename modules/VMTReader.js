@@ -22,7 +22,7 @@ export class VMTReader {
 		]
 
     return checkProperties
-      .map(key => this.vmtData[key])
+      .map(key => this.vmtData['$' + key])
       .filter(tex => !!tex)
       .map(tex => tex + '.vtf');
   }

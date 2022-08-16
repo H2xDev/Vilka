@@ -1,8 +1,15 @@
+// @ts-check
+
 import path from 'path';
 import fs from 'fs';
 
+/**
+ * Creates needed directories and do copy
+ * @param { string } from
+ * @param { string } to
+ */
 export const forceCopy = (from, to) => {
-	if (!fs.existsSync(from)) return;
+  if (!fs.existsSync(from)) return console.log('NO FILE: ', from);
 
 	console.log('COPY FILE: ', from);
 
@@ -11,11 +18,19 @@ export const forceCopy = (from, to) => {
 	fs.copyFileSync(from, to);
 }
 
+/**
+ * Returns file list from directory
+ * @param { string } startPath
+ * @param { string } filter works by "includes" principe
+ * @param { boolean } recurse
+ * 
+ * @returns { string[] }
+ */
 export const getFileList = (startPath, filter, recurse = true) => {
     const foundFiles = [];
 
     if (!fs.existsSync(startPath)){
-				throw new Error(`Directory ${startPath} not found`);
+        return [];
     }
 
     var files = fs.readdirSync(startPath);
@@ -27,7 +42,9 @@ export const getFileList = (startPath, filter, recurse = true) => {
         if (stat.isDirectory() && recurse){
             foundFiles.push(...getFileList(filename, filter));
         } else if (filename.indexOf(filter) >= 0) {
-            foundFiles.push(filename);
+            if (!stat.isDirectory()) {
+                foundFiles.push(filename);
+            }
         };
     };
 

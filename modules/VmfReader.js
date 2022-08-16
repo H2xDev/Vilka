@@ -1,4 +1,6 @@
-import {GameSoundsManager} from "./GameSoundsManager.js";
+// @ts-check
+
+import { ModManager } from "./ModManager.js";
 import { loadResource } from "./ResReader.js";
 
 export class VMFReader {
@@ -47,25 +49,27 @@ export class VMFReader {
     if (!entities) return [];
 
     return Array.isArray(entities)
-      ? entities.map(ent => ent.model).filter(m => !!m)
+      ? entities
+        .map(ent => ent.model)
+        .filter(m => !!m) 
       : [];
   }
 
   get soundList() {
     const { entity: entities } = this.mapData;
-    const gameSounds = new GameSoundsManager();
+    const modManager = new ModManager();
 
     if (!entities) return [];
 
     return (Array.isArray(entities) ? entities : [entities])
-      .filter(ent => ent.classname === 'ambient_generic')
+      .filter(ent => ent.classname === 'ambient_generic' && ent.message)
       .map(ent => {
         const isScriptedSound = true
           && !ent.message.endsWith('.wav')
           && !ent.message.endsWith('.mp3');
 
         if (isScriptedSound) {
-          return gameSounds.soundManifest[ent.message];
+          return modManager.scriptedSoundList[ent.message];
         }
 
         return ent.message;
