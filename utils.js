@@ -1,6 +1,16 @@
 import path from 'path';
 import fs from 'fs';
 
+export const forceCopy = (from, to) => {
+	if (!fs.existsSync(from)) return;
+
+	console.log('COPY FILE: ', from);
+
+	const toDir = path.dirname(to);
+	fs.mkdirSync(toDir, { recursive: true });
+	fs.copyFileSync(from, to);
+}
+
 export const getFileList = (startPath, filter, recurse = true) => {
     const foundFiles = [];
 
