@@ -9,11 +9,11 @@ vilka.exe D:\Steam\steamapps\sourcemods\mod_name
 ```
 
 The app will look for `Gameinfo.txt` and according to this file it will collect base resources.
-Also your mod must have `mapsrc` folder with sources of maps, to take assets information.
+Also your mod must have `mapsrc` folder with sources of maps, to take assets information. The release version of mod will be placed in folder `release`.
 
 
 ## Configuration
-If you need to add more files/folders to copy, just create config file `vilka.config.json`.
+If you need to add more files/folders to copy, just create a config file `vilka.config.json` and place it into your mod folder.
 </br>
 Here is example of config:
 ```json
