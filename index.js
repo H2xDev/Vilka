@@ -7,8 +7,8 @@ import { forceCopy, getFileList } from './utils.js';
 
 import {
 	CONFIG,
-	COPY_FOLDERS,
-	COPY_PATH,
+	IMPORTANT_FOLDERS,
+	RELEASE_PATH,
 	GAMEINFO_FILE,
 	GAMEINFO_FOLDER,
 	MAPLIST,
@@ -22,11 +22,8 @@ import { MDLReader } from "./modules/MdlReader.js";
 import { VMFReader } from "./modules/VmfReader.js";
 import { VMTReader } from './modules/VMTReader.js';
 
-const GameInfoManager = new ModManager(GAMEINFO_FILE);
+const mod = new ModManager(GAMEINFO_FILE);
 
-/**
- * @param { string } modelPath
- */
 const copyModel = (modelPath) => {
 	'.mdl,.sw.vtx,.vvd,.ani,.dx80.vtx,.dx90.vtx,.phy'
 		.split(',')
@@ -38,16 +35,12 @@ const copyModel = (modelPath) => {
 				return;
 			}
 
-			const to = path.resolve(COPY_PATH, file);
+			const to = path.resolve(RELEASE_PATH, file);
 
 			forceCopy(from, to);
 		});
 }
 
-
-/**
- * @param { string } materialPath
- */
 const copyMaterial = (materialPath) => {
 	const base = path.resolve(MATERIALS_FOLDER, String(materialPath).toLowerCase());
 	const vmt = base + '.vmt';
@@ -55,7 +48,7 @@ const copyMaterial = (materialPath) => {
 	if (!fs.existsSync(vmt)) return;
 
 	const from = vmt;
-	const to = path.resolve(COPY_PATH, 'materials', materialPath.toLowerCase() + '.vmt');
+	const to = path.resolve(RELEASE_PATH, 'materials', materialPath.toLowerCase() + '.vmt');
 
 	forceCopy(from, to);
 
@@ -64,26 +57,23 @@ const copyMaterial = (materialPath) => {
 	data.vtfs
 		.map(tex => {
 			const from = path.resolve(MATERIALS_FOLDER, tex.toLowerCase());
-			const to = path.resolve(COPY_PATH, 'materials', tex.toLowerCase());
+			const to = path.resolve(RELEASE_PATH, 'materials', tex.toLowerCase());
 
 			forceCopy(from, to);
 		});
 
 }
 
-/**
- * @param { string } asset
- */
 const copySound = (asset) => {
 	const from = path.resolve(SOUNDS_FOLDER, asset);
-	const to = path.resolve(COPY_PATH, 'sound', asset);
+	const to = path.resolve(RELEASE_PATH, 'sound', asset);
 
 	forceCopy(from, to);
 }
 
 const copyBsp = (map) => {
 	const from = path.resolve(MAPS_FOLDER, map);
-	const to = path.resolve(COPY_PATH, 'maps', map);
+	const to = path.resolve(RELEASE_PATH, 'maps', map);
 
 	forceCopy(from, to);
 }
@@ -111,7 +101,7 @@ const assets = MAPLIST
 	})
 	.flat();
 
-const prepareSounds = () => assets.push(...GameInfoManager.weaponAssets);
+const prepareSounds = () => assets.push(...mod.weaponAssets);
 
 const prepareMaterialsFromModels = () => {
 	assets
@@ -147,7 +137,7 @@ const copyAssets = () => {
 
 const copyImportantFiles = () => {
 	const rootFiles = getFileList(GAMEINFO_FOLDER, '', false);
-	let files = COPY_FOLDERS
+	let files = IMPORTANT_FOLDERS
 		.map(folder => {
 			const fullPath = path.resolve(GAMEINFO_FOLDER, folder);
 	 		return getFileList(fullPath, '', true);
@@ -180,7 +170,7 @@ const copyImportantFiles = () => {
 
 	files.forEach((asset) => {
 		const from = path.resolve(GAMEINFO_FOLDER, asset);
-		const to = path.resolve(COPY_PATH, asset);
+		const to = path.resolve(RELEASE_PATH, asset);
 
 		forceCopy(from, to);
 	});
@@ -188,9 +178,10 @@ const copyImportantFiles = () => {
 
 
 console.log('Collecting assets...');
+
 prepareSounds();
 prepareMaterialsFromModels();
 copyAssets();
 copyImportantFiles();
 
-console.log('Assets prepared');
+console.log('The release is ready');

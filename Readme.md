@@ -44,5 +44,20 @@ To make executable appliaction this project uses `pkg` module.
 
 ```batch
 yarn build
+# npm run build
 ```
+
+## Contribution
+Feel free to contribute this project. There is some features that need to be implemented like:
+- Analyse VMFs for scenes to get related-only scenes;
+- parse scenes for required audio files;
+- autocompile closecaptions to release folder;
+- add validation for `vilka.config.json`;
+
+Also you able to suggest another features that will be useful for prepare a release.
+
+### Contribution workflow
+If you would like to contribute this project, you should do it by [Gitflow](http://danielkummer.github.io/git-flow-cheatsheet/) workflow:
+- feature/* - you want to add a new feature
+- bugfix/* - you want to fix something in the project
 

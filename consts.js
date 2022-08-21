@@ -4,24 +4,13 @@ import fs from 'fs';
 import path from 'path';
 import { getFileList } from "./utils.js";
 
-export const COPY_FOLDERS = [
+export const IMPORTANT_FOLDERS = [
 	'resource',
 	'bin',
 	'scripts',
 	'scenes',
 	'cfg',
 ];
-
-export const ADDITIONAL_ASSET_FOLDERS = [
-	'materials/VGUI',
-	'materials/CONSOLE',
-	'models/props_c17',
-	'models/weapons',
-	'models/items',
-	'models/gibs',
-	'models/humans',
-];
-
 
 export const CONFIG = {};
 export const GAMEINFO_FOLDER = process.argv[2];
@@ -31,7 +20,7 @@ export const MAPSRC_FOLDER = path.resolve(GAMEINFO_FOLDER, 'mapsrc');
 export const MAPS_FOLDER = path.resolve(GAMEINFO_FOLDER, 'maps');
 export const SOUNDS_FOLDER = path.resolve(GAMEINFO_FOLDER, 'sound');
 export const MATERIALS_FOLDER = path.resolve(GAMEINFO_FOLDER, 'materials');
-export const COPY_PATH = path.resolve(GAMEINFO_FOLDER, 'release');
+export const RELEASE_PATH = path.resolve(GAMEINFO_FOLDER, 'release');
 
 /** @type { string[] } */
 export const MAPLIST = getFileList(MAPSRC_FOLDER, '.vmf', true);
@@ -52,7 +41,7 @@ if (fs.existsSync(CONFIG_FILE)) {
 	Object.assign(CONFIG, JSON.parse(fs.readFileSync(CONFIG_FILE).toString()));
 
 	if (CONFIG.include) {
-		COPY_FOLDERS.push(...CONFIG.include);
+		IMPORTANT_FOLDERS.push(...CONFIG.include);
 	}
 }
 
