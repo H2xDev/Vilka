@@ -1,5 +1,5 @@
 {
-  "name": "vilka2",
+  "name": "vilka",
   "version": "1.0.1",
   "description": "",
   "main": "index.js",
@@ -10,7 +10,6 @@
   "author": "Radik Khamatdinov",
   "license": "ISC",
   "dependencies": {
-    "pkg": "^5.8.0",
-    "true-case-path": "^2.2.1"
+    "pkg": "^5.8.0"
   }
 }

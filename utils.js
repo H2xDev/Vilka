@@ -52,7 +52,13 @@ const getFileList = (startPath, filter, recurse = true) => {
     return foundFiles;
 };
 
+/** @param { string } message */
+const logError = (message) => {
+    return console.log('\nError -≡ ' + message + '\n');
+}
+
 module.exports = {
     getFileList,
     forceCopy,
+    logError,
 };
