@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { getFileList } = require('./utils.js');
+const { getFileList, logError } = require('./utils.js');
 
 const IMPORTANT_FOLDERS = [
 	'resource',
@@ -53,10 +53,16 @@ console.log(Authors.join('\n'));
 // TODO: Add config scheme validation
 if (fs.existsSync(CONFIG_FILE)) {
 	console.log('Config detected');
-	Object.assign(CONFIG, JSON.parse(fs.readFileSync(CONFIG_FILE).toString()));
 
-	if (CONFIG.include) {
-		IMPORTANT_FOLDERS.push(...CONFIG.include);
+	try {
+		Object.assign(CONFIG, JSON.parse(fs.readFileSync(CONFIG_FILE).toString()));
+
+		if (CONFIG.include) {
+			IMPORTANT_FOLDERS.push(...CONFIG.include);
+		}
+	} catch (err) {
+		logError('Config file is corrupted. Validate vilka.config.json via some JSON-validator');
+		process.exit(1);
 	}
 }
 
