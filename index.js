@@ -1,11 +1,14 @@
 // @ts-check
 
-import path from 'path';
-import fs from 'fs';
+const fs = require('fs');
+const path = require('path');
 
-import { forceCopy, getFileList } from './utils.js';
+const {
+	forceCopy,
+	getFileList,
+} = require('./utils.js');
 
-import {
+const {
 	CONFIG,
 	IMPORTANT_FOLDERS,
 	RELEASE_PATH,
@@ -14,13 +17,13 @@ import {
 	MAPLIST,
 	MAPS_FOLDER,
 	MATERIALS_FOLDER,
-	SOUNDS_FOLDER
-} from './consts.js';
+	SOUNDS_FOLDER,
+} = require('./consts.js');
 
-import { ModManager } from './modules/ModManager.js';
-import { MDLReader } from "./modules/MdlReader.js";
-import { VMFReader } from "./modules/VmfReader.js";
-import { VMTReader } from './modules/VMTReader.js';
+const { ModManager } = require('./modules/ModManager.js');
+const { MDLReader } = require('./modules/MdlReader.js');
+const { VMFReader } = require('./modules/VmfReader.js');
+const { VMTReader } = require('./modules/VMTReader.js');
 
 const mod = new ModManager(GAMEINFO_FILE);
 
@@ -78,6 +81,12 @@ const copyBsp = (map) => {
 	forceCopy(from, to);
 }
 
+const copyRaw = (raw) => {
+	const from = path.resolve(GAMEINFO_FOLDER, raw);
+	const to = path.resolve(RELEASE_PATH, raw);
+
+	forceCopy(from, to);
+}
 
 console.log('Prepare maps...');
 const assets = MAPLIST
@@ -101,7 +110,7 @@ const assets = MAPLIST
 	})
 	.flat();
 
-const prepareSounds = () => assets.push(...mod.weaponAssets);
+const prepareWeaponAssets = () => assets.push(...mod.weaponAssets);
 
 const prepareMaterialsFromModels = () => {
 	assets
@@ -129,8 +138,11 @@ const copyAssets = () => {
 			case 'mp3':
 				return copySound(asset);
 
+			case 'raw':
+				return copyRaw(asset);
+
 			default:
-				return copyMaterial(asset);
+				return copyMaterial(asset.replace('.vmt', ''));
 		}
 	});
 }
@@ -160,10 +172,6 @@ const copyImportantFiles = () => {
 				const isExcluded = CONFIG.exclude
 					.some(file => asset.includes(file))
 
-				if (isExcluded) {
-					console.log('EXCLUDED: ', asset);
-				}
-
 				return !isExcluded;
 			});
 	}
@@ -178,9 +186,10 @@ const copyImportantFiles = () => {
 
 
 console.log('Collecting assets...');
-
-prepareSounds();
+prepareWeaponAssets();
 prepareMaterialsFromModels();
+
+console.log('Building release...');
 copyAssets();
 copyImportantFiles();
 

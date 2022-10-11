@@ -1,4 +1,5 @@
-import fs from 'fs';
+const fs = require('fs');
+const { trueCasePathSync } = require('true-case-path');
 
 const readResource = (source) => {
   const out = {};
@@ -138,10 +139,12 @@ const readResource = (source) => {
   return out;
 };
 
-export const loadResource = (filename) => {
+const loadResource = (filename) => {
   if (!fs.existsSync(filename)) throw new Error('Resource "' + filename + '" doesn\'t exist');
 
   const source = fs.readFileSync(filename).toString();
 
   return readResource(source);
 }
+
+module.exports = { loadResource };

@@ -1,17 +1,18 @@
 // @ts-check
 
-import path from 'path';
-import fs from 'fs';
+const fs = require('fs');
+const path = require('path');
 
 /**
  * Creates needed directories and do copy
  * @param { string } from
  * @param { string } to
  */
-export const forceCopy = (from, to) => {
-  if (!fs.existsSync(from)) return console.log('NO FILE: ', from);
+const forceCopy = (from, to) => {
+  if (!fs.existsSync(from))
+    return // console.log('NO FILE: ', from);
 
-	console.log('COPY FILE: ', from);
+	// console.log('COPY FILE: ', from);
 
 	const toDir = path.dirname(to);
 	fs.mkdirSync(toDir, { recursive: true });
@@ -26,7 +27,7 @@ export const forceCopy = (from, to) => {
  * 
  * @returns { string[] }
  */
-export const getFileList = (startPath, filter, recurse = true) => {
+const getFileList = (startPath, filter, recurse = true) => {
     const foundFiles = [];
 
     if (!fs.existsSync(startPath)){
@@ -51,3 +52,7 @@ export const getFileList = (startPath, filter, recurse = true) => {
     return foundFiles;
 };
 
+module.exports = {
+    getFileList,
+    forceCopy,
+};

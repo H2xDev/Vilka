@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "pkg -t node18-win -o vilka.exe index.js"
+    "build": "pkg -t node16-win-x64 -o vilka.exe index.js",
+    "test": "node index.js D:/Swelter_private_demo/Swelter_private_demo"
   },
   "author": "Radik Khamatdinov",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
-    "pkg": "^5.8.0"
+    "pkg": "^5.8.0",
+    "true-case-path": "^2.2.1"
   }
 }
