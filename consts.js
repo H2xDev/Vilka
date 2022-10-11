@@ -1,10 +1,8 @@
-// @ts-check
+const fs = require('fs');
+const path = require('path');
+const { getFileList, logError } = require('./utils.js');
 
-import fs from 'fs';
-import path from 'path';
-import { getFileList } from "./utils.js";
-
-export const IMPORTANT_FOLDERS = [
+const IMPORTANT_FOLDERS = [
 	'resource',
 	'bin',
 	'scripts',
@@ -12,36 +10,74 @@ export const IMPORTANT_FOLDERS = [
 	'cfg',
 ];
 
-export const CONFIG = {};
-export const GAMEINFO_FOLDER = process.argv[2];
-export const CONFIG_FILE = path.resolve(GAMEINFO_FOLDER, 'vilka.config.json');
-export const GAMEINFO_FILE = path.resolve(GAMEINFO_FOLDER, 'gameinfo.txt');
-export const MAPSRC_FOLDER = path.resolve(GAMEINFO_FOLDER, 'mapsrc');
-export const MAPS_FOLDER = path.resolve(GAMEINFO_FOLDER, 'maps');
-export const SOUNDS_FOLDER = path.resolve(GAMEINFO_FOLDER, 'sound');
-export const MATERIALS_FOLDER = path.resolve(GAMEINFO_FOLDER, 'materials');
-export const RELEASE_PATH = path.resolve(GAMEINFO_FOLDER, 'release');
+const CONFIG = {};
+const GAMEINFO_FOLDER = process.argv[2];
+const CONFIG_FILE = path.resolve(GAMEINFO_FOLDER, 'vilka.config.json');
+const GAMEINFO_FILE = path.resolve(GAMEINFO_FOLDER, 'gameinfo.txt');
+const MAPSRC_FOLDER = path.resolve(GAMEINFO_FOLDER, 'mapsrc');
+const MAPS_FOLDER = path.resolve(GAMEINFO_FOLDER, 'maps');
+const SOUNDS_FOLDER = path.resolve(GAMEINFO_FOLDER, 'sound');
+const MATERIALS_FOLDER = path.resolve(GAMEINFO_FOLDER, 'materials');
+const RELEASE_PATH = path.resolve(GAMEINFO_FOLDER, 'release');
 
 /** @type { string[] } */
-export const MAPLIST = getFileList(MAPSRC_FOLDER, '.vmf', true);
+const MAPLIST = getFileList(MAPSRC_FOLDER, '.vmf', true);
 
-export const Authors = [
-	"Vilka\n",
-	"Created by:",
-	'Radik \"H2x\" Khamatdinov',
-	"\nTechnical assistance:",
-	'Alexander \"KAJAJJJ\" Veselov',
+const Authors = [
+	`┌───────────────────────────────┐
+│                               │
+│             ┌─────────────    │
+│  VILKA      │                 │
+├─────────────┼──────────────   │
+│  v 1.0      │                 │
+│             └─────────────    │
+│                               │
+│  Created by                   │
+│  RADIK "H2x" KHAMATDINOV      │
+│                               │
+│  Technical Assistance         │
+│  ALEXANDER "KAJAJJJ" VESELOV  │
+│                               │
+│  Testing                      │
+│  EDUARD "MYCbEH" ROSTOVTSEV   │
+│                               │
+│                               │
+│  h2xdev.github.io             │
+│                               │
+└───────────────────────────────┘
+`,
 ];
 
 console.log(Authors.join('\n'));
 
 // TODO: Add config scheme validation
 if (fs.existsSync(CONFIG_FILE)) {
-	console.log('CONFIG DETECTED');
-	Object.assign(CONFIG, JSON.parse(fs.readFileSync(CONFIG_FILE).toString()));
+	console.log('Config detected');
 
-	if (CONFIG.include) {
-		IMPORTANT_FOLDERS.push(...CONFIG.include);
+	try {
+		Object.assign(CONFIG, JSON.parse(fs.readFileSync(CONFIG_FILE).toString()));
+
+		if (CONFIG.include) {
+			IMPORTANT_FOLDERS.push(...CONFIG.include);
+		}
+	} catch (err) {
+		logError('Config file is corrupted. Validate vilka.config.json via some JSON-validator');
+		process.exit(1);
 	}
 }
 
+module.exports = {
+	CONFIG,
+	GAMEINFO_FOLDER,
+	CONFIG_FILE,
+	GAMEINFO_FILE,
+	MAPSRC_FOLDER,
+	MAPS_FOLDER,
+	SOUNDS_FOLDER,
+	MATERIALS_FOLDER,
+	RELEASE_PATH,
+	MAPLIST,
+	IMPORTANT_FOLDERS,
+
+	Authors,
+};

@@ -1,8 +1,7 @@
-import fs from "fs";
-
+const fs = require('fs');
 const TEXTURE_BYTE_SIZE = 64;
 
-export class MDLReader {
+class MDLReader {
   readPosition = 0;
   bytes = new Int32Array([]);
 
@@ -178,3 +177,5 @@ export class MDLReader {
     return this.bytes[this.readPosition - 1];
   }
 }
+
+module.exports = { MDLReader };

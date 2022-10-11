@@ -1,13 +1,11 @@
 // @ts-check
 
-import fs from 'fs';
-import path from 'path';
-import {getFileList} from '../utils.js';
+const fs = require('fs');
+const path = require('path');
+const { getFileList } = require('../utils.js');
+const { loadResource } = require('./ResReader.js');
 
-import { loadResource } from './ResReader.js';
-
-
-export class ModManager {
+class ModManager {
 
   /** @type { ModManager | undefined } */
   static currentManager;
@@ -33,7 +31,35 @@ export class ModManager {
     return files
       .map(file => {
         const weaponData = loadResource(file).WeaponData;
-        return [weaponData.viewmodel, weaponData.playermodel];
+
+        Object
+          .keys(weaponData)
+          .forEach(key => {
+            weaponData[key.toLowerCase()] = weaponData[key];
+          });
+
+        const soundData = Object
+          .values(weaponData.sounddata || {})
+          .map((soundName) => {
+            const wave = this.scriptedSoundList[soundName];
+
+            if (!wave) {
+              return null;
+            }
+
+            return Array.isArray(wave)
+              ? wave
+              : [wave]
+          })
+          .flat()
+          .filter(wave => !!wave)
+          .map(wave => wave.replace('^', ''))
+
+        return [
+          weaponData.viewmodel,
+          weaponData.playermodel,
+          ...soundData,
+        ];
       })
       .filter(file => !!file)
       .flat();
@@ -67,10 +93,17 @@ export class ModManager {
 
     const updatedEntries = Object
       .entries(soundManifest)
+      .filter(([_, data]) => !!data)
       .map(([key, data]) => {
-        if (data.wave) {
+        // NOTE: Avoid duplicates of sound script
+        if (Array.isArray(data)) {
+          data = data[0];
+        }
+
+        if (data && data.wave) {
           data.wave = data.wave.replace(/\\/g, '/');
         }
+
         return [key, data.wave || data.rndwave.wave];
       });
 
@@ -82,3 +115,5 @@ export class ModManager {
     return [];
   }
 }
+
+module.exports = { ModManager };

@@ -61,3 +61,7 @@ If you would like to contribute this project, you should do it by [Gitflow](http
 - feature/* - you want to add a new feature
 - bugfix/* - you want to fix something in the project
 
+## Troubleshooting
+
+### Windows 7 support
+1. Windows 7 users should set environment variable `NODE_SKIP_PLATFORM_CHECK=1`
